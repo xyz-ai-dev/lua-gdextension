@@ -36,6 +36,8 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/classes/engine.hpp>
 
+#include <dlfcn.h>
+
 using namespace godot;
 using namespace luagdextension;
 
@@ -43,6 +45,12 @@ static void initialize(ModuleInitializationLevel level) {
 	if (level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+	// Preload this library with RTLD_GLOBAL
+    void* handle = dlopen("./build/libluagdextension.linux.template_debug.x86_64.so", RTLD_NOW | RTLD_GLOBAL);
+    if (!handle) {
+        printf("Failed to preload: %s\n", dlerror());
+    }
 
 	// Lua object wrappers
 	ClassDB::register_abstract_class<LuaObject>();

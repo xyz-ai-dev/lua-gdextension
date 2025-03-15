@@ -35,6 +35,11 @@ if ARGUMENTS.get("debugging_symbols") == 'true':
 
 # Avoid stripping all symbols, we need `luagdextension_entrypoint` exported
 remove_options(env["LINKFLAGS"], "-s")
+env.Append(LINKFLAGS=["-Wl,--export-dynamic"])  # Add this line here to export Lua C API symbols
+
+# Ensure no -fvisibility=hidden is sneaking in
+remove_options(env["CCFLAGS"], "-fvisibility=hidden")
+remove_options(env["CXXFLAGS"], "-fvisibility=hidden")
 
 # Lua defines
 env.Append(CPPDEFINES="MAKE_LIB")
